@@ -1,0 +1,16 @@
+#! /usr/bin/python
+#-*- coding: utf-8 -*-
+
+from ConfigParser import RawConfigParser
+
+archivo_configuracion=open("config.conf","w")
+
+parametros=RawConfigParser()
+parametros.add_section("modulos")
+parametros.add_section("frame")
+
+parametros.set("frame","sizew",1039)
+parametros.set("frame","sizeh",550)
+
+parametros.write(archivo_configuracion)
+archivo_configuracion.close()

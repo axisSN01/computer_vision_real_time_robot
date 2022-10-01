@@ -1,0 +1,97 @@
+import cv
+
+#-----------------------------------------------------------
+
+def is_rect_nonzero(r):
+    (_,_,w,h) = r
+    return (w > 0) and (h > 0)
+
+#-----------------------------------------------------------
+
+def multiples_objetos(hist,frame,dic): 
+    frame2=frame
+    cv.Smooth(frame, frame2, cv.CV_GAUSSIAN, 3, 0)
+    imghsv=cv.CreateImage(cv.GetSize(frame),8,3)
+    cv.CvtColor(frame2,imghsv,cv.CV_BGR2HSV)
+    color_mask1 = cv.CreateImage(cv.GetSize(frame), 8, 1)       
+    (min_val, max_val, X_min, X_max) = cv.GetMinMaxHistValue( hist)
+    x_max=X_max[0]
+    x_min=X_min[0]  
+    i=x_max
+    while hist.bins[i]>0.01*max_val and i<178:  #max_val>=hist.bins[i] and 
+        i=i+1                        
+        bw_x_max=i # busco ancho de banda en H(matiz)
+    i=x_max
+    while hist.bins[i]>0.01*max_val:  #max_val>=hist.bins[i] and 
+        i=i-1                        
+        bw_x_min=i  
+    Hmin=bw_x_min*255/179-60 # mapeo los valores en x, de 0-180 a 0-255, offset de 50
+    Hmax=bw_x_max*255/179 
+    Smin=hist.bins[bw_x_min]*255/max_val   # aca no es 255 porque ya viene normalizado
+    Smax=hist.bins[x_max]*255/max_val   # rango de intensidad del color
+    if Smin>Smax:
+       cv.InRangeS(imghsv, cv.Scalar(Hmin,0,255), cv.Scalar(Hmax,255,255), color_mask1) # bw no es parejo
+    else: cv.InRangeS(imghsv, cv.Scalar(Hmin,0,0), cv.Scalar(Hmax,255,255), color_mask1)
+            #encontrar contornos
+    cv.Erode(color_mask1,color_mask1,None,3)
+    cv.Dilate(color_mask1,color_mask1,None,10)
+    storage = cv.CreateMemStorage(0)
+    contour = cv.FindContours(color_mask1, storage, cv.CV_RETR_CCOMP, cv.CV_CHAIN_APPROX_SIMPLE)
+    points = []	
+    areas = []
+    ret_point=(0,0,0,0)
+    while contour: # dibujar rectangulos
+        bound_rect = cv.BoundingRect(list(contour))
+        Area= cv.ContourArea(contour)
+        pt1 = (bound_rect[0], bound_rect[1])
+        pt2 = (bound_rect[2],bound_rect[3])
+        areas.append(Area)
+        points.append([pt1,pt2])
+        contour = contour.h_next()
+
+    AreaMin=dic["t_min"]*1600.0/(dic["lineablanca"]**2)   # valores calibrados Amin *( px**2 )/(Lblanca**2)=Area en px2
+    AreaMax=dic["t_max"]*1600.0/(dic["lineablanca"]**2)
+
+    if dic["crit"]==0:          # criterio 0, menor a mayor
+        AreaAux=AreaMax
+        for i in range(0,len(areas)):
+            if areas[i]<=AreaMax and areas[i]>=AreaMin:         # rango de areas
+                if areas[i]<=AreaAux:
+                    ret_point=(points[i][0][0],points[i][0][1],points[i][1][0],points[i][1][1])
+                    AreaAux=areas[i]
+
+    if dic["crit"]==1:          # criterio 1, mayor a menor
+        AreaAux=AreaMin        
+        for i in range(0,len(areas)):
+            if areas[i]<=AreaMax and areas[i]>=AreaMin:
+                if areas[i]>=AreaAux:
+                    ret_point=(points[i][0][0],points[i][0][1],points[i][1][0],points[i][1][1])
+                    AreaAux=areas[i]
+
+    if dic["crit"]==2:          # criterio 2, primero en aparecer
+        ret_point=(points[0][0][0],points[0][0][1],points[0][1][0],points[0][1][1])
+
+    centroid_x=ret_point[0]/2    # long x/2
+    centroid_y=ret_point[1]/2        # long y sobre 2
+    cv.Circle(frame,(centroid_x,centroid_y),5,[0,0,255],-1)
+    return ret_point, frame
+
+#-----------------------------------------------------------
+
+def BW_hist(hist):
+    (min_val, max_val, X_min, X_max) = cv.GetMinMaxHistValue( hist)
+    x_max=X_max[0]
+    x_min=X_min[0]  
+    i=x_max
+    while hist.bins[i]>0.01*max_val and i<179:  #max_val>=hist.bins[i] and 
+        i=i+1                        
+        bw_x_max=i # busco ancho de banda en H(matiz)
+
+    i=x_max
+    while hist.bins[i]>0.01*max_val:  #max_val>=hist.bins[i] and 
+        i=i-1                        
+        bw_x_min=i  
+
+    return [bw_x_min,bw_x_max,255,255]    # pongo v_min y v_max a maximo, ventana cuadrada
+                
+

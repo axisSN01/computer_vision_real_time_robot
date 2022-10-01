@@ -1,0 +1,7 @@
+[modulos]
+eeprom_editor = True
+
+[frame]
+sizew = 1039
+sizeh = 550
+

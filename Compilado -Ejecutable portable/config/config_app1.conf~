@@ -1,0 +1,26 @@
+[linea]
+tamano = 3.0
+
+[rectangulo]
+rectangulo0 = 10
+rectangulo1 = 9
+rectangulo2 = 626
+rectangulo3 = 471
+
+[criterio]
+criterio = 2
+cuenta = 5
+t_busqueda = 6
+erode = 1
+dilate = 2
+
+[tamano]
+minimo = 0.5
+maximo = 42.0
+
+[hist]
+x_min = 29
+x_max = 32
+v_min = 255
+v_max = 255
+

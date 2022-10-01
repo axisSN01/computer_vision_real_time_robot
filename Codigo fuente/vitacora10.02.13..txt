@@ -1,0 +1,9 @@
+falta resolver probelma de inestabilidad con camshift, probar par aver.
+lso demas solucionado: movimiento, colores, etc.
+
+11.02.13
+
+anda todo, reemplace histograma de 0-180 a 0-254, asi me desentiendo de los offset en Hmin y Hmax
+que me traian problemas.
+ahora anda 10 puntos.
+unico problema, la imagen queda como que empieza de nuevo a dibujar los rectangulos

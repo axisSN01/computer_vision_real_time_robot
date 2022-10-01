@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'instrucciones.ui'
+#
+# Created: Wed Feb 20 07:28:52 2013
+#      by: PyQt4 UI code generator 4.9.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
+
+class Ui_instrucciones(object):
+    def setupUi(self, instrucciones):
+        instrucciones.setObjectName(_fromUtf8("instrucciones"))
+        instrucciones.resize(520, 495)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(instrucciones.sizePolicy().hasHeightForWidth())
+        instrucciones.setSizePolicy(sizePolicy)
+        instrucciones.setMinimumSize(QtCore.QSize(520, 495))
+        instrucciones.setMaximumSize(QtCore.QSize(522, 496))
+        self.horizontalLayout = QtGui.QHBoxLayout(instrucciones)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.textBrowser = QtGui.QTextBrowser(instrucciones)
+        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.horizontalLayout.addWidget(self.textBrowser)
+
+        self.retranslateUi(instrucciones)
+        QtCore.QMetaObject.connectSlotsByName(instrucciones)
+
+    def retranslateUi(self, instrucciones):
+        instrucciones.setWindowTitle(QtGui.QApplication.translate("instrucciones", "Instrucciones", None, QtGui.QApplication.UnicodeUTF8))
+

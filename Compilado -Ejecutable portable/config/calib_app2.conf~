@@ -1,0 +1,14 @@
+[Valores]
+hmax = 233
+smax = 218
+vmax = 255
+hmin = 25
+smin = 0
+vmin = 4
+threshold = 207
+erode = 0
+dilate = 0
+
+[Linea]
+tamaño = 10.0
+

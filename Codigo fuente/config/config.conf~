@@ -1,0 +1,13 @@
+[linea]
+tamaño = 2.5
+
+[rectangulo]
+rectangulo0 = 7
+rectangulo1 = 10
+rectangulo2 = 630
+rectangulo3 = 474
+0 = 7
+1 = 10
+2 = 630
+3 = 474
+

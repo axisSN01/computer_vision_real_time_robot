@@ -1,0 +1,113 @@
+#! /usr/bin/python
+#-*- coding: utf-8 -*-
+
+import serial,os,time,sys
+from time import sleep as delay
+from PyQt4 import QtCore, QtGui
+from angulos_calculo import *
+
+class pinguino(QtCore.QThread):
+    def __init__(self, dic, parent = None):
+        QtCore.QThread.__init__(self)
+        self.puerto=''
+        self.dic=dic
+        self.acum=3
+        self.zetas=[]
+        self.xes=[]
+        self.yes=[]
+
+#-----------------------------------------------------------
+
+    def RecursiveConect(self,max_puertos=20):
+        """ Se conecta automáticamente con el primer pinguino que encuentre habilitado """
+        cont=0
+        while cont<=max_puertos: 
+            try:
+                if os.name=='posix':
+                    if self.Conect('/dev/ttyACM'+str(cont)):
+                        self.emit(QtCore.SIGNAL('conectado'))
+                        return True
+                elif os.name=='nt':
+                    if self.Conect('COM'+str(cont)):
+                        self.emit(QtCore.SIGNAL('conectado'))
+                        return True
+            except: pass
+            cont+=1         
+        return False 
+ 
+#-----------------------------------------------------------
+
+    def Conect(self,puerto):
+        """ Inicializa la comunicación """
+        try:
+            self.ping=serial.Serial(puerto,115200,timeout=0.1)
+            delay(1)
+            self.ping.write("co")
+            if self.ping.read(10)=="conectados":
+                self.puerto=puerto
+                return True
+        except: pass
+
+#-----------------------------------------------------------
+        
+    def close(self):
+        """ Finaliza la comunicación """
+        try:
+            self.ping.close()
+        except: pass
+
+#-----------------------------------------------------------
+    def run(self):
+        while True:
+            if self.puerto=='':
+                if not self.RecursiveConect(): 
+                    self.emit(QtCore.SIGNAL('errorconexion'))
+                    return
+            if self.dic['ir']:
+                self.ir()
+                self.ping.flushInput()
+
+    def ir(self):
+        if len(self.zetas)<=self.acum:       # acumulo y saco promedio
+            self.zetas.append(self.dic["z"])
+            self.xes.append(self.dic["centro_masa"][0])
+            self.yes.append(self.dic["centro_masa"][1])
+            return
+
+        else:
+            self.zetas.pop(0)                # retiro el item mas viejo de los10 que tengo
+            self.xes.pop(0)
+            self.yes.pop(0)
+            self.zetas.append(self.dic["z"])     #agrego el nuevo item
+            self.xes.append(self.dic["centro_masa"][0])
+            self.yes.append(self.dic["centro_masa"][1])
+            z_local=sum(self.zetas)/self.acum
+            x_local=sum(self.xes)/self.acum
+            y_local=sum(self.yes)/self.acum
+            if self.dic["is_open"]:        # si esta abierta la mano 
+                mano=str(1).zfill(3)
+            else:mano=str(0).zfill(3)
+            pos_cm_y=(500-y_local)*29.0/380.0  # bueno aca necesito saber pxtoCm en y, 
+            pos_cm_x=x_local/640.0
+            pos_cm_z=z_local
+            try:
+                (grados_base,z_servo1,z_servo2,z_servo3)=angulos_calculo_3d(pos_cm_x,pos_cm_y,pos_cm_z)
+                z1=str(z_servo1).zfill(3)        
+                z2=str(z_servo2).zfill(3)
+                z3=str(z_servo3).zfill(3)
+                ba=str(grados_base).zfill(3)
+                i=1
+                while(i):
+                    self.ping.write('ir'+z1+z2+z3+ba+mano)
+                    if self.ping.read(3)=='voy':
+                        i=0
+                #self.ping.write(z1)
+                #self.ping.write(z2)
+                #self.ping.write(z3)
+                #self.ping.write(ba)
+                #self.ping.write(mano)
+            except:
+                self.emit(QtCore.SIGNAL('nollega'))
+            delay(0.1)
+            return
+

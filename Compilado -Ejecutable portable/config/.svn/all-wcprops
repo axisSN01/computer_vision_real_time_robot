@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/50/trunk/pinno/config
+END
+reset_config.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/50/trunk/pinno/config/reset_config.py
+END
+stdout
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/50/trunk/pinno/config/stdout
+END
+config.conf
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/50/trunk/pinno/config/config.conf
+END
