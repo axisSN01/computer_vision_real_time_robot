@@ -11,7 +11,7 @@ sistema dinámico.
 El brazo robot es controlado por la plataforma de hardware Arduino
 UNO. 
 
-<img src="_images/2.jpg" height="300">
+<img src="_images/2.JPG" height="300">
 
 Este Proyecto gano el premio [SASE2013](http://www.sase.com.ar/2013/concurso-de-proyectos-estudiantiles/) del congreso Argentino de sistemas embebidos (UBA)
 
@@ -34,9 +34,11 @@ A su vez se probó el algoritmo de detección de objetos en donde las
 posiciones detectadas contuvieron menos del 8% de error, por lo que el funcionamiento del
 algoritmo resultó muy aceptable.
 
+<img src="_images/2.gif" height="300">
+
 <img src="_images/brazo1.gif" height="300">
 
-<img src="https://j.gifs.com/J8rnXJ.gif" height="300">
+
 
 --- 
 
